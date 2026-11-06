@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ДЕКА* — скейтшоп нового поколения | Асфальт не ждёт</title>
+<style>
+/* ================== ПЕРЕМЕННЫЕ И БАЗА ================== */
+:root{
+  --bg:#0a0e09; --panel:#0e130a; --card:#141b10; --line:#26321a;
+  --acid:#aaff00; --text:#eef3e6; --muted:#9db08f; --radius:18px;
+  --display:Impact,Haettenschweiler,"Arial Black",sans-serif;
+  --mono:Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+/* тёмный фон с едва заметной «бетонной» сеткой */
+body{background:var(--bg) fixed;color:var(--text);font:16px/1.6 "Segoe UI",system-ui,Tahoma,sans-serif;overflow-x:hidden;
+  background-image:linear-gradient(rgba(170,255,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(170,255,0,.04) 1px,transparent 1px);background-size:44px 44px}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-transform:uppercase;letter-spacing:1px}
+::selection{background:var(--acid);color:#0a0e09}
+:focus-visible{outline:3px solid var(--acid);outline-offset:3px;border-radius:6px}
+section[id]{scroll-margin-top:90px} /* якоря не прячутся под липкой шапкой */
+
+/* ================== БЕГУЩАЯ СТРОКА ================== */
+.ticker{overflow:hidden;background:var(--acid);color:#0a0e09;font:700 12px/1 var(--mono);letter-spacing:2px;text-transform:uppercase}
+.ticker__row{display:flex;width:max-content;animation:ticker 22s linear infinite}
+.ticker:hover .ticker__row{animation-play-state:paused} /* пауза при наведении */
+.ticker__row span{padding:9px 0;white-space:nowrap}
+@keyframes ticker{to{transform:translateX(-50%)}}
+
+/* ================== ШАПКА ================== */
+.header{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;justify-content:space-between;padding:14px 24px;background:rgba(10,14,9,.94);border-bottom:1px solid var(--line)}
+.logo{font-family:var(--display);font-size:28px;letter-spacing:3px;color:var(--text);text-decoration:none;line-height:1}
+.logo b{color:var(--acid)}
+.logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:4px;color:var(--muted);margin-top:4px}
+.nav{display:flex;gap:28px}
+.nav a{color:var(--text);text-decoration:none;font-size:13px;text-transform:uppercase;letter-spacing:2px;position:relative;transition:color .25s}
+.nav a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;background:var(--acid);transition:width .25s}
+.nav a:hover{color:var(--acid)}
+.nav a:hover::after{width:100%}
+
+/* ================== КНОПКИ (все «Оставить заявку» — заглушки) ================== */
+.btn{display:inline-block;position:relative;overflow:hidden;background:var(--acid);color:#0a0e09;font:800 15px/1 "Segoe UI",sans-serif;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;padding:18px 34px;border-radius:14px;transition:transform .2s,box-shadow .2s}
+.btn::after{content:"";position:absolute;top:0;left:-80%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-25deg);transition:left .5s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 12px 34px rgba(170,255,0,.35)}
+.btn:hover::after{left:140%} /* блик пробегает по кнопке */
+.btn--ghost{background:transparent;color:var(--acid);box-shadow:inset 0 0 0 2px var(--acid)}
+.btn--ghost:hover{background:var(--acid);color:#0a0e09;box-shadow:0 12px 34px rgba(170,255,0,.25)}
+
+/* ================== ГЛАВНЫЙ ЭКРАН ================== */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;max-width:1120px;margin:0 auto;padding:70px 24px 90px;animation:fadeUp .8s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.kicker{font-family:var(--mono);color:var(--acid);letter-spacing:3px;text-transform:uppercase;font-size:13px;margin-bottom:18px}
+h1{font-size:clamp(54px,8.5vw,106px);line-height:.92;margin-bottom:26px}
+.hollow{color:var(--acid)} /* запасной вариант, если обводка не поддержана */
+@supports(-webkit-text-stroke:2px #000){.hollow{color:transparent;-webkit-text-stroke:2.5px var(--acid)}}
+.slogan{display:inline-block;background:var(--acid);color:#0a0e09;font-family:var(--display);font-size:clamp(18px,2.4vw,26px);letter-spacing:1px;text-transform:uppercase;padding:9px 18px;border-radius:10px;transform:rotate(-1.6deg);margin-bottom:22px}
+.hero p.lead{color:var(--muted);max-width:46ch;margin-bottom:30px}
+.hero__note{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:1px;margin-left:16px}
+.stats{display:flex;gap:34px;margin-top:40px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.stats b{display:block;font:400 28px/1.1 var(--display);color:var(--acid);letter-spacing:1px}
+/* фото доски в наклонной рамке со «скотчем» и стикером */
+.shot{position:relative;transform:rotate(2deg);transition:transform .45s ease}
+.shot:hover{transform:rotate(0) scale(1.01)}
+.shot img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;border-radius:22px;border:2px solid var(--acid);background:radial-gradient(circle at 50% 30%,#20301a,#0a0e09);box-shadow:0 34px 70px rgba(0,0,0,.55)}
+.tape{position:absolute;width:96px;height:26px;background:rgba(170,255,0,.55)}
+.tape--l{top:-12px;left:-24px;transform:rotate(-38deg)}
+.tape--r{bottom:-10px;right:-20px;transform:rotate(-35deg)}
+.sticker{position:absolute;top:-20px;right:-10px;background:#fff;color:#0a0e09;font-family:var(--display);font-size:17px;letter-spacing:1px;text-transform:uppercase;padding:12px 16px;border-radius:12px;box-shadow:0 10px 24px rgba(0,0,0,.4);animation:float 4.5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:rotate(7deg)}50%{transform:rotate(7deg) translateY(-10px)}}
+
+/* ================== ОБЩЕЕ ДЛЯ СЕКЦИЙ ================== */
+.section{max-width:1120px;margin:0 auto;padding:78px 24px}
+.alt{background:var(--panel);border-block:1px solid var(--line)} /* секция на тёмной подложке */
+.sec-head{margin-bottom:44px}
+h2{font-size:clamp(34px,4.5vw,54px);margin-top:8px}
+h2 em{font-style:normal;color:var(--acid)}
+
+/* ================== ПОЧЕМУ МЫ ================== */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px 26px;transition:transform .3s,border-color .3s,box-shadow .3s}
+.card:nth-child(odd){transform:rotate(-.6deg)}  /* лёгкий «плакатный» разброс */
+.card:nth-child(even){transform:rotate(.6deg)}
+.card:hover{transform:translateY(-8px);border-color:var(--acid);box-shadow:0 18px 44px rgba(0,0,0,.5)}
+.card:hover .ico{transform:rotate(-10deg) scale(1.2)}
+.num{position:absolute;top:16px;right:20px;font-family:var(--display);font-size:54px;line-height:1;color:rgba(170,255,0,.14)}
+.ico{display:block;font-size:34px;margin-bottom:14px;transition:transform .3s}
+.card h3{font-size:22px;margin-bottom:10px;color:var(--acid)}
+.card p{color:var(--muted);font-size:15px}
+
+/* ================== ЦЕНЫ ================== */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
+.plan{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px 26px;transition:transform .3s,border-color .3s,box-shadow .3s}
+.plan:hover{transform:translateY(-6px);border-color:var(--acid);box-shadow:0 16px 40px rgba(0,0,0,.45)}
+.tag{font-family:var(--mono);font-size:12px;letter-spacing:3px;color:var(--muted)}
+.price{font-family:var(--display);font-size:46px;color:var(--acid);margin:10px 0 2px;letter-spacing:1px}
+.plan ul{list-style:none;margin:18px 0 26px;color:var(--muted);font-size:15px;flex:1}
+.plan li{padding:8px 0;border-bottom:1px dashed var(--line)}
+.plan li::before{content:"+ ";color:var(--acid);font-weight:700}
+.plan--hit{background:linear-gradient(165deg,#1e2d10,#121a0c);border:2px solid var(--acid);position:relative}
+.hit{position:absolute;top:-16px;left:24px;background:var(--acid);color:#0a0e09;font-family:var(--display);font-size:14px;padding:6px 14px;border-radius:8px;letter-spacing:2px;text-transform:uppercase;transform:rotate(-3deg)}
+.plan .btn{width:100%;text-align:center}
+
+/* ================== ОТЗЫВЫ ================== */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.review{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--acid);border-radius:var(--radius);padding:28px 26px;transition:transform .3s,border-color .3s}
+.review:hover{transform:translateY(-6px);border-color:var(--acid)}
+.stars{color:var(--acid);letter-spacing:5px;font-size:15px;margin-bottom:14px}
+.review q{quotes:"«" "»";display:block;margin-bottom:20px}
+.author{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.ava{flex:none;width:42px;height:42px;border-radius:50%;background:var(--acid);color:#0a0e09;display:grid;place-items:center;font-family:var(--display);font-size:19px}
+
+/* ================== ПОДВАЛ ================== */
+.footer{background:#070b06;border-top:2px solid var(--acid);padding:52px 24px 30px}
+.footer .inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:36px}
+.footer h4{font-family:var(--mono);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.footer a{color:var(--text);text-decoration:none;transition:color .2s}
+.footer a:hover{color:var(--acid)}
+.soc{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:8px 18px;margin:0 8px 8px 0;font-size:13px;transition:transform .25s,border-color .25s}
+.soc:hover{border-color:var(--acid);transform:translateY(-2px)}
+.copy{max-width:1120px;margin:36px auto 0;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* ================== АДАПТИВ ================== */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding-top:46px}
+  .grid3,.plans,.grid2,.footer .inner{grid-template-columns:1fr}
+  .card:nth-child(odd),.card:nth-child(even){transform:none}
+  .plan--hit{order:-1} /* хит-тариф показываем первым на мобильном */
+}
+@media(max-width:520px){
+  .nav{gap:14px}
+  .nav a{font-size:11px;letter-spacing:1px}
+  .stats{gap:20px;flex-wrap:wrap}
+}
+/* ================== ДОСТУПНОСТЬ: уважаем «меньше движения» ================== */
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- бегущая строка: текст продублирован для бесшовного зацикливания -->
+<div class="ticker"><div class="ticker__row">
+  <span>🛹 новый дроп уже в наличии ★ трейд-ин: скинь старую доску — забери новую ★ бесплатный подбор спота ★ катаем круглый год ★ </span>
+  <span>🛹 новый дроп уже в наличии ★ трейд-ин: скинь старую доску — забери новую ★ бесплатный подбор спота ★ катаем круглый год ★ </span>
+</div></div>
+
+<!-- ШАПКА: текстовый логотип и меню из трёх пунктов -->
+<header class="header">
+  <a class="logo" href="#top">ДЕКА<b>*</b><small>скейтшоп · с 2019</small></a>
+  <nav class="nav">
+    <a href="#why">Почему мы</a>
+    <a href="#prices">Цены</a>
+    <a href="#reviews">Отзывы</a>
+  </nav>
+</header>
+
+<main id="top">
+<!-- ГЛАВНЫЙ ЭКРАН: заголовок, слоган, кнопка-заглушка и фото -->
+<section class="hero">
+  <div>
+    <p class="kicker">// скейтшоп нового поколения — для тех, кто катает</p>
+    <h1>Доска.<br>Улица.<br><span class="hollow">Ты.</span></h1>
+    <span class="slogan">Асфальт не ждёт</span>
+    <p class="lead">Современные скейтборды под твой стиль: первая доска, стрит или парк. Соберём сетап, подскажем спот и заберём старый скейт в трейд-ин.</p>
+    <a class="btn" href="#">Оставить заявку</a><span class="hero__note">ответим за 15 минут</span>
+    <div class="stats">
+      <div><b>1200+</b>райдеров с нами</div>
+      <div><b>37</b>спотов в городе</div>
+      <div><b>0</b>подделок. всегда</div>
+    </div>
+  </div>
+  <!-- Картинка: положи файл "hero-skate.jpg" рядом с index.html -->
+  <figure class="shot">
+    <img src="sket.png" alt="Современный скейтборд крупным планом" width="560" height="700">
+    <span class="tape tape--l"></span>
+    <span class="tape tape--r"></span>
+    <span class="sticker">new drop 26</span>
+  </figure>
+</section>
+
+<!-- ПОЧЕМУ МЫ: три карточки преимуществ -->
+<section class="section" id="why">
+  <div class="sec-head">
+    <p class="kicker">// 01 — почему мы</p>
+    <h2>Три причины <em>катать с нами</em></h2>
+  </div>
+  <div class="grid3">
+    <article class="card">
+      <span class="num">01</span><span class="ico">🛹</span>
+      <h3>Только оригинальные доски</h3>
+      <p>Никаких подделок: деки, подвески и колёса проверенных брендов с гарантией магазина.</p>
+    </article>
+    <article class="card">
+      <span class="num">02</span><span class="ico">📍</span>
+      <h3>Спот в подарок</h3>
+      <p>Бесплатно подберём место для катания под твой уровень — от спокойного двора до крытого парка.</p>
+    </article>
+    <article class="card">
+      <span class="num">03</span><span class="ico">♻️</span>
+      <h3>Trade-in старого скейта</h3>
+      <p>Принеси доску, на которой вырос, — честно оценим и скинем до 30% на новый сетап.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ЦЕНЫ: три тарифа, средний — хит сезона -->
+<section class="alt" id="prices">
+ <div class="section">
+  <div class="sec-head">
+    <p class="kicker">// 02 — цены</p>
+    <h2>Выбери <em>свой сетап</em></h2>
+  </div>
+  <div class="plans">
+    <article class="plan">
+      <h3 class="tag">Старт</h3><div class="price">4 990 ₽</div>
+      <ul>
+        <li>Комплект 7.75" для первых трюков</li>
+        <li>Наждак и сборка — бесплатно</li>
+        <li>Гайд «Твой первый олли»</li>
+      </ul>
+      <a class="btn btn--ghost" href="#">Оставить заявку</a>
+    </article>
+    <article class="plan plan--hit">
+      <span class="hit">хит сезона</span>
+      <h3 class="tag">Райд</h3><div class="price">8 990 ₽</div>
+      <ul>
+        <li>Канадский клён 8.0", подшипники ABEC-7</li>
+        <li>Карта спотов города в подарок</li>
+        <li>Месяц поддержки от райдера ДЕКИ</li>
+      </ul>
+      <a class="btn" href="#">Оставить заявку</a>
+    </article>
+    <article class="plan">
+      <h3 class="tag">Про</h3><div class="price">14 990 ₽</div>
+      <ul>
+        <li>Про-дек 8.25" + скоростные подшипники</li>
+        <li>Trade-in старого скейта ×2 выгоды</li>
+        <li>Бесплатная настройка сетапа навсегда</li>
+      </ul>
+      <a class="btn btn--ghost" href="#">Оставить заявку</a>
+    </article>
+  </div>
+ </div>
+</section>
+
+<!-- ОТЗЫВЫ: два коротких отзыва райдеров -->
+<section class="section" id="reviews">
+  <div class="sec-head">
+    <p class="kicker">// 03 — отзывы</p>
+    <h2>Что говорят <em>райдеры</em></h2>
+  </div>
+  <div class="grid2">
+    <article class="review">
+      <div class="stars">★★★★★</div>
+      <q>Заказал «Старт» на днюху — приехал за два дня. Ребята из ДЕКИ всё собрали и показали, как держать баланс. Уже делаю олли!</q>
+      <div class="author"><span class="ava">Т</span><span>Тимур, 12 лет · катаю первый сезон</span></div>
+    </article>
+    <article class="review">
+      <div class="stars">★★★★★</div>
+      <q>Сдала старый скейт по трейд-ину и взяла «Райд» почти за полцены. Ещё и спот у набережной подсказали — теперь катаем там всей компанией.</q>
+      <div class="author"><span class="ava">С</span><span>Соня, 15 лет · катаю 2 года</span></div>
+    </article>
+  </div>
+</section>
+</main>
+
+<!-- ПОДВАЛ: контакты, соцсети, копирайт -->
+<footer class="footer">
+  <div class="inner">
+    <div>
+      <a class="logo" href="#top">ДЕКА<b>*</b></a>
+      <p style="color:var(--muted);font-size:14px;margin-top:12px;max-width:32ch">Скейтшоп для тех, кто не ищет повод. Приходи — подберём, соберём, обменяем.</p>
+    </div>
+    <div>
+      <h4>Контакты</h4>
+      <p><a href="tel:+79991234567">+7 999 123-45-67</a></p>
+      <p><a href="mailto:hi@deka.shop">hi@deka.shop</a></p>
+      <p style="color:var(--muted)">ул. Кирпичная, 7 · ежедневно 10:00–21:00</p>
+    </div>
+    <div>
+      <h4>Мы на связи</h4>
+      <a class="soc" href="#">Telegram</a>
+      <a class="soc" href="#">VK</a>
+      <a class="soc" href="#">YouTube</a>
+    </div>
+  </div>
+  <div class="copy">
+    <span>© 2026 ДЕКА. Катай с удовольствием — и в защите.</span>
+    <span>асфальт не ждёт 🛹</span>
+  </div>
+</footer>
+
+</body>
+</html>
